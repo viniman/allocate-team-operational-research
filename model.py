@@ -10,7 +10,7 @@ Vitor
 
 '''
 
-from file_utils import *
+from utils import *
 from gurobipy import *
 
 def teamLocation(numUsers, numTeams, minMembersTeam, maxMembersTeam, beneffits): #languageTeam, languagesUser
