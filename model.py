@@ -51,10 +51,10 @@ def teamLocation(numUsers, numTeams, minMembersTeam, maxMembersTeam, beneffits, 
 		model.addConstrs((quicksum(allocate[user,team] for user in range(numUsers)) <= maxMembersTeam[team] for team in range(numTeams)), 'cardinalidade_max')
 
 		# Restricao 4: # maxXp, minXp, langXp, qtdUserMaxXp, qtdUserMinXp
-		model.addConstrs((quicksum(allocate[user,team]*(lowerXp[team] <= langXp[user][team]) for user in range(numUsers)) >= qtdUserMinXp[team] for team in range(numTeams)), 'conhecimento_min')
+		model.addConstrs((quicksum(allocate[user,team]*(langXp[user][team] <= lowerXp[team]) for user in range(numUsers)) >= qtdUserMinXp[team] for team in range(numTeams)), 'conhecimento_min')
 
 		# Restricao 5:
-		model.addConstrs((quicksum(allocate[user,team]*(upperXp[team] >= langXp[user][team]) for user in range(numUsers)) >= qtdUserMaxXp[team] for team in range(numTeams)), 'conhecimento_max')
+		model.addConstrs((quicksum(allocate[user,team]*(langXp[user][team] >= upperXp[team]) for user in range(numUsers)) >= qtdUserMaxXp[team] for team in range(numTeams)), 'conhecimento_max')
 
 		#Abaixo explicação sobre as restrições 4 e 5
 		'''
