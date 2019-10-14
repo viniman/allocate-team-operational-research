@@ -30,6 +30,7 @@ def teamLocation(numUsers, numTeams, minMembersTeam, maxMembersTeam, beneffits):
 
 		# Cria variaveis
 		allocate = model.addVars(numUsers, numTeams, vtype=GRB.BINARY, name="allocate")
+		#allocate = model.addVars(alloc_user_team, vtype=GRB.BINARY, obj=beneffits, name="allocate")
 		#allocation = model.addVars(alloc_user_team, vtype=GRB.BINARY, name="allocation")
 	    
 	    # Create variables
@@ -37,7 +38,7 @@ def teamLocation(numUsers, numTeams, minMembersTeam, maxMembersTeam, beneffits):
 
 		# Define objetivo
 		# maximizar o somatório de pesos das pessoas alocadas em equipes
-		model.setObjective((quicksum(allocate[user,team] for user in range(numUsers) for team in range(numTeams))), GRB.MAXIMIZE) # for aloc in allocation * peso
+		model.setObjective((quicksum(allocate[user,team]*beneffits[user][team] for user in range(numUsers) for team in range(numTeams))), GRB.MAXIMIZE) # for aloc in allocation * peso
 		# for user in range(numUsers) for team in range(numTeams): allocation[user,team]*weight[user,team]
 
 		# Definindo restricoes
@@ -47,10 +48,10 @@ def teamLocation(numUsers, numTeams, minMembersTeam, maxMembersTeam, beneffits):
 		# m.setObjective(quicksum(pay[w]*x[w,s] for w,s in availability), GRB.MINIMIZE)
 
 		# Restricao: quantidade de pessoas alocadas em cada equipe seja maior que a quantidade mínima desejada
-		model.addConstrs((quicksum(allocate[user,team] for user in range(numUsers)) >= minMembersTeam[team] for team in range(numTeams)), "cardinalidade_min")
+		model.addConstrs((quicksum(allocate[user,team] for user in range(numUsers)) >= minMembersTeam[team] for team in range(numTeams)), 'cardinalidade_min')
 
 		# Restricao: quantidade de pessoas alocadas em cada equipe seja menor que a quantidade máxima desejada
-		model.addConstrs((quicksum(allocate[user,team] for user in range(numUsers)) <= maxMembersTeam[team] for team in range(numTeams)),"uncardinalidade_max")
+		model.addConstrs((quicksum(allocate[user,team] for user in range(numUsers)) <= maxMembersTeam[team] for team in range(numTeams)), 'cardinalidade_max')
 
 		model.write('model_allocation.lp')
 
