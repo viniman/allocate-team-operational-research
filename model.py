@@ -37,12 +37,14 @@ def teamLocation(numUsers, numTeams, minMembersTeam, maxMembersTeam, beneffits):
 
 		# Define objetivo
 		# maximizar o somatório de pesos das pessoas alocadas em equipes
-		model.setObjective(allocate.sum(), GRB.MAXIMIZE) # for aloc in allocation * peso
+		model.setObjective((quicksum(allocate[user,team] for user in range(numUsers) for team in range(numTeams))), GRB.MAXIMIZE) # for aloc in allocation * peso
 		# for user in range(numUsers) for team in range(numTeams): allocation[user,team]*weight[user,team]
 
 		# Definindo restricoes
 		# Restricao: cada vertice do tipo pessoa é atribuído apenas a uma equipe ou a nenhuma
 		model.addConstrs((quicksum(allocate[user,team] for user in range(numUsers)) == 1 for team in range(numTeams)), 'totalidade')
+		#*beneffits[user,team]
+		# m.setObjective(quicksum(pay[w]*x[w,s] for w,s in availability), GRB.MINIMIZE)
 
 		# Restricao: quantidade de pessoas alocadas em cada equipe seja maior que a quantidade mínima desejada
 		model.addConstrs((quicksum(allocate[user,team] for user in range(numUsers)) >= minMembersTeam[team] for team in range(numTeams)), "cardinalidade_min")
@@ -50,14 +52,42 @@ def teamLocation(numUsers, numTeams, minMembersTeam, maxMembersTeam, beneffits):
 		# Restricao: quantidade de pessoas alocadas em cada equipe seja menor que a quantidade máxima desejada
 		model.addConstrs((quicksum(allocate[user,team] for user in range(numUsers)) <= maxMembersTeam[team] for team in range(numTeams)),"uncardinalidade_max")
 
+		model.write('model_allocation.lp')
 
 		model.optimize()
 
 		
+
+
 		for v in model.getVars():
 			print('%s %g' % (v.varName, v.x))
 
 		print('Obj: %g' % model.objVal)
+
+
+
+		status = model.status
+		if status == GRB.Status.UNBOUNDED:
+			print('The model cannot be solved because it is unbounded')
+			#exit(0)
+		if status == GRB.Status.OPTIMAL:
+			print('The optimal objective is %g' % model.objVal)
+			#exit(0)
+		if status != GRB.Status.INF_OR_UNBD and status != GRB.Status.INFEASIBLE:
+			print('Optimization was stopped with status %d' % status)
+			#exit(0)
+
+		# do IIS
+		print('The model is infeasible; computing IIS')
+		model.computeIIS()
+		if model.IISMinimal:
+			print('IIS is minimal\n')
+		else:
+			print('IIS is not minimal\n')
+		print('\nThe following constraint(s) cannot be satisfied:')
+		for c in model.getConstrs():
+			if c.IISConstr:
+				print('%s' % c.constrName)
 
 	except GurobiError as e:
 		print('Error code ' + str(e.errno) + ": " + str(e))

@@ -17,6 +17,13 @@ langUsers = [[0, 1], # id das lingagens de cada usuário
              [5, 2],
              [3, 1],
              [0, 1]]
-beneffitsWeight = [[4, 3, 4, 56, 7, 78, 5, 34, 3, 3], # matriz de beneficio (users x teams)
-                   [88, 3, 4, 56, 4, 9, 5, 6, 5, 9],  # linhas=users, colunas=teams
-                   [4, 6, 7, 5, 7, 10, 5, 34, 3, 1]]
+beneffitsWeight = [[4, 3, 4], # matriz de beneficio (users x teams)
+                   [56, 7, 78], # linhas=users, colunas=teams
+                   [5, 34, 3],
+                   [3, 88, 3],
+                   [4, 56, 4], 
+                   [9, 5, 6],
+                   [5, 9, 4], 
+                   [6, 7, 5], 
+                   [7, 10, 5],
+                   [34, 3, 1]]
