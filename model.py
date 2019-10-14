@@ -78,6 +78,7 @@ def teamLocation(numUsers, numTeams, minMembersTeam, maxMembersTeam, beneffits):
 			print('Optimization was stopped with status %d' % status)
 			#exit(0)
 
+		'''
 		# do IIS
 		print('The model is infeasible; computing IIS')
 		model.computeIIS()
@@ -89,6 +90,7 @@ def teamLocation(numUsers, numTeams, minMembersTeam, maxMembersTeam, beneffits):
 		for c in model.getConstrs():
 			if c.IISConstr:
 				print('%s' % c.constrName)
+		'''
 
 	except GurobiError as e:
 		print('Error code ' + str(e.errno) + ": " + str(e))
