@@ -29,12 +29,8 @@ def teamLocation(numUsers, numTeams, minMembersTeam, maxMembersTeam, beneffits, 
 		print(alloc_user_team)
 
 		# Cria variaveis
-		allocate = model.addVars(numUsers, numTeams, vtype=GRB.BINARY, name="allocate")
+		allocate = model.addVars(numUsers, numTeams, vtype=GRB.BINARY, name='allocate')
 		
-		#allocate = model.addVars(alloc_user_team, vtype=GRB.BINARY, obj=beneffits, name="allocate")
-		#allocation = model.addVars(alloc_user_team, vtype=GRB.BINARY, name="allocation")
-	    # Create variables
-	    #allocateam = model.addVars(aloc_user_team, vtype=GRB.BINARY, obj=beneffits, name="allocateam")
 
 		# Define objetivo
 		# maximizar o somatório de pesos das pessoas alocadas em equipes
@@ -122,7 +118,7 @@ def teamLocation(numUsers, numTeams, minMembersTeam, maxMembersTeam, beneffits, 
 		'''
 
 	except GurobiError as e:
-		print('Error code ' + str(e.errno) + ": " + str(e))
+		print('Error code ' + str(e.errno) + ': ' + str(e))
 
 	except AttributeError:
 		print('Encountered an attribute error')
@@ -130,4 +126,5 @@ def teamLocation(numUsers, numTeams, minMembersTeam, maxMembersTeam, beneffits, 
 
 
 if __name__ == '__main__':
+	instanceRead('instances/exemplo.txt')
 	teamLocation(users, teams, minMembers, maxMembers, beneffitsWeight, maxExperienceLangTeam, minExperienceLangTeam, langExperience, qtdUsersForMaxXp, qtdUsersForMinXp)

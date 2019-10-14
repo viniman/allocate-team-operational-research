@@ -46,3 +46,20 @@ langExperience = [[0.4, 0.3, 0.4], # matriz de beneficio (users x teams)
                    [0.6, 0.7, 0.5], 
                    [0.7, 0.10, 0.5],
                    [0.34, 0.3, 0.1]]
+
+
+# class Instance:
+#     def __init__(self, path):
+#         self.instanceRead(path)
+
+
+# users, teams, minMembers, maxMembers, beneffitsWeight, maxExperienceLangTeam, minExperienceLangTeam, langExperience, qtdUsersForMaxXp, qtdUsersForMinXp
+def instanceRead(path): #def instanceRead(self, path):
+    print('Leitura de Instância')
+    inputFile = open(path,'r')
+
+    line = inputFile.readline()
+    print(line)
+    line = line.split()
+    print(line)
+    
