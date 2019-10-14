@@ -42,7 +42,7 @@ def teamLocation(numUsers, numTeams, minMembersTeam, maxMembersTeam, beneffits):
 
 		# Definindo restricoes
 		# Restricao: cada vertice do tipo pessoa é atribuído apenas a uma equipe ou a nenhuma
-		model.addConstrs((quicksum(allocate[user,team] for user in range(numUsers)) == 1 for team in range(numTeams)), 'totalidade')
+		model.addConstrs((quicksum(allocate[user,team] for team in range(numTeams)) <= 1 for user in range(numUsers)), 'totalidade')
 		#*beneffits[user,team]
 		# m.setObjective(quicksum(pay[w]*x[w,s] for w,s in availability), GRB.MINIMIZE)
 
