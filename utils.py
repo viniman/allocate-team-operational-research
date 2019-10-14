@@ -30,11 +30,18 @@ beneffitsWeight = [[4, 3, 4], # matriz de beneficio (users x teams)
 
 #Restrição 4
 minExperienceLangTeam = [0.2, 0.3, 0.1]
-qtdUsersForMinXp = [0, 0, 0]
+#qtdUsersForMinXp = [0, 1, 0] # 2 soluções
+qtdUsersForMinXp = [0, 2, 0] # 2 soluções
+#qtdUsersForMinXp = [0, 2, 1] # inviavel
+#qtdUsersForMinXp = [0, 0, 0]
 
 # Restrição 5
-maxExperienceLangTeam = [0.2, 0.3, 0.1]
-qtdUsersForMaxXp = [0, 0, 0]
+maxExperienceLangTeam = [0.8, 0.6, 0.7]
+#qtdUsersForMaxXp = [0, 2, 1] # inviavel
+qtdUsersForMaxXp = [1, 0, 1]
+#qtdUsersForMaxXp = [0, 0, 1]
+#qtdUsersForMaxXp = [2, 0, 1] # inviavel
+#qtdUsersForMaxXp = [0, 0, 0]
 
 langExperience = [[0.4, 0.3, 0.4], # matriz de beneficio (users x teams)
                    [0.56, 0.7, 0.78], # linhas=users, colunas=teams
