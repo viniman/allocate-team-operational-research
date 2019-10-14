@@ -1,0 +1,32 @@
+Instâncias com dados separados por espaço
+Cada linha ou conjunto de linha indica determinado dado/parâmetro do problema
+
+Segue abaixo, a descrição dos parâmetros utilizados para compor a instância
+
+M N -> M: número de usuários, N: número de equipes
+linha com lista de quantidade de usuários mínima para cada equipe
+linha com lista de quantidade de usuários máxima para cada equipe
+linha com porcentagens de experiência mínima definida por cada equipe
+linha com número mínimo de usuários com a experiência mínima definida
+linha com porcentagens de experiência máxima definida por cada equipe
+linha com número mínimo de usuários com a experiência máxima definida
+Matriz MxN da experiência de cada usuário com a linguagem requerida por cada equipe
+Matriz MxN do benefício de alocar cada usuário em cada equipe
+
+
+Exemplo:
+4 2
+1 1
+2 1
+0.2 0.3
+0 0
+0.2 0.3
+0 1
+0.4 0.3
+0.56 0.7
+0.5 0.34
+0.3 0.88
+4 3
+56 7
+5 34
+3 9
