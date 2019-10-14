@@ -30,9 +30,9 @@ def teamLocation(numUsers, numTeams, minMembersTeam, maxMembersTeam, beneffits):
 
 		# Cria variaveis
 		allocate = model.addVars(numUsers, numTeams, vtype=GRB.BINARY, name="allocate")
+		
 		#allocate = model.addVars(alloc_user_team, vtype=GRB.BINARY, obj=beneffits, name="allocate")
 		#allocation = model.addVars(alloc_user_team, vtype=GRB.BINARY, name="allocation")
-	    
 	    # Create variables
 	    #allocateam = model.addVars(aloc_user_team, vtype=GRB.BINARY, obj=beneffits, name="allocateam")
 
