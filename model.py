@@ -13,6 +13,7 @@ Vitor
 from gurobipy import *
 from input import *
 import utils
+import sys
 
 
 def solveTeamLocationModel(instance): #languageTeam, languagesUser
@@ -133,9 +134,15 @@ def solveTeamLocationModel(instance): #languageTeam, languagesUser
 		print('Encountered an attribute error')
 
 
-
-if __name__ == '__main__':
-	instance = Instance('instances/1-Instancia 1.txt') # passar por linha de comando o caminho da instancia
+def main(args):
+	if len(args) > 0:
+		instance = Instance(args[0]) # passar por linha de comando o caminho da instancia
+	else:
+		instance = Instance('instances/1-Instancia 1.txt') # passar por linha de comando o caminho da instancia
 	solveTeamLocationModel(instance)
 	utils.saveSolution()
 	utils.scatterPlot()
+
+
+if __name__ == '__main__':
+	main(sys.argv[1:])
