@@ -10,52 +10,44 @@ Vitor
 
 '''
 
-from utils import *
 from gurobipy import *
+from input import *
+import utils
 
-def teamLocation(numUsers, numTeams, minMembersTeam, maxMembersTeam, beneffits, upperXp, lowerXp, langXp, qtdUserMaxXp, qtdUserMinXp): #languageTeam, languagesUser
+
+def solveTeamLocationModel(instance): #languageTeam, languagesUser
 	try:
-		print(numUsers)
-		print(numTeams)
-		print(minMembersTeam)
-		print(maxMembersTeam)
-		print(beneffits, '\n-------------------------\n')
+		print('\n--------Inicio Solucao modelo--------\n')
+		
 		#Create a new model
 		model = Model('mineragit_po')
-	    
-	    # Range of teams-users variables
-		alloc_user_team = [[0 for user in range(users)] for team in range(teams)]
-
-		print(alloc_user_team)
 
 		# Cria variaveis
-		allocate = model.addVars(numUsers, numTeams, vtype=GRB.BINARY, name='allocate')
-		
+		allocate = model.addVars(instance.numUsers, instance.numTeams, vtype=GRB.BINARY, name='allocate')
 
 		# Define objetivo
 		# maximizar o somatório de pesos das pessoas alocadas em equipes
-		model.setObjective((quicksum(allocate[user,team]*beneffits[user][team] for user in range(numUsers) for team in range(numTeams))), GRB.MAXIMIZE) # for aloc in allocation * peso
-		# for user in range(numUsers) for team in range(numTeams): allocation[user,team]*weight[user,team]
-
+		model.setObjective((quicksum(allocate[user,team]*instance.beneffits[user][team] for user in range(instance.numUsers) for team in range(instance.numTeams))), GRB.MAXIMIZE)
+		
 		# Definindo restricoes
 
 		# Restricao 1: cada vertice do tipo pessoa é atribuído apenas a uma equipe ou a nenhuma
-		model.addConstrs((quicksum(allocate[user,team] for team in range(numTeams)) <= 1 for user in range(numUsers)), 'totalidade')
+		model.addConstrs((quicksum(allocate[user,team] for team in range(instance.numTeams)) <= 1 for user in range(instance.numUsers)), 'totalidade')
 		#*beneffits[user,team]
 		# m.setObjective(quicksum(pay[w]*x[w,s] for w,s in availability), GRB.MINIMIZE)
-
+		
 		# Restricao 2: quantidade de pessoas alocadas em cada equipe seja maior que a quantidade mínima desejada
-		model.addConstrs((quicksum(allocate[user,team] for user in range(numUsers)) >= minMembersTeam[team] for team in range(numTeams)), 'cardinalidade_min')
+		model.addConstrs((quicksum(allocate[user,team] for user in range(instance.numUsers)) >= instance.minMembersTeam[team] for team in range(instance.numTeams)), 'cardinalidade_min')
 
 		# Restricao 3: quantidade de pessoas alocadas em cada equipe seja menor que a quantidade máxima desejada
-		model.addConstrs((quicksum(allocate[user,team] for user in range(numUsers)) <= maxMembersTeam[team] for team in range(numTeams)), 'cardinalidade_max')
-
+		model.addConstrs((quicksum(allocate[user,team] for user in range(instance.numUsers)) <= instance.maxMembersTeam[team] for team in range(instance.numTeams)), 'cardinalidade_max')
+		
 		# Restricao 4: # maxXp, minXp, langXp, qtdUserMaxXp, qtdUserMinXp
-		model.addConstrs((quicksum(allocate[user,team]*(langXp[user][team] <= lowerXp[team]) for user in range(numUsers)) >= qtdUserMinXp[team] for team in range(numTeams)), 'conhecimento_min')
+		model.addConstrs((quicksum(allocate[user,team]*(instance.langXp[user][team] <= instance.lowerXp[team]) for user in range(instance.numUsers)) >= instance.qtdUsersMinXp[team] for team in range(instance.numTeams)), 'conhecimento_min')
 
 		# Restricao 5:
-		model.addConstrs((quicksum(allocate[user,team]*(langXp[user][team] >= upperXp[team]) for user in range(numUsers)) >= qtdUserMaxXp[team] for team in range(numTeams)), 'conhecimento_max')
-
+		a = model.addConstrs((quicksum(allocate[user,team]*(instance.langXp[user][team] >= instance.upperXp[team]) for user in range(instance.numUsers)) >= instance.qtdUsersMaxXp[team] for team in range(instance.numTeams)), 'conhecimento_max')
+		
 		#Abaixo explicação sobre as restrições 4 e 5
 		'''
 		As restrições (5) e (6) são responsáveis pelo conhecimento de uma linguagem que uma
@@ -77,21 +69,36 @@ def teamLocation(numUsers, numTeams, minMembersTeam, maxMembersTeam, beneffits, 
 
 
 		# Salva modelo em arquivo de saida
-		model.write('model_allocation.lp')
+		model.write('model_allocation.lp') # colocar model_allocation + instanceName + .lp
+
+		#model.feasRelaxS(0, True, False, True) # bruno - o que é isso
 
 		# Otimiza modelo de programacao linear
 		model.optimize()
 
 		
 
-
+		print('---------------- TESTES -------------')
+		#print(model)
+		#print(model.getVars())
 		for v in model.getVars():
 			print('%s %g' % (v.varName, abs(v.x)))
 
-		print('Obj: %g' % model.objVal)
+		print('Valor da solução objetivo: %g' % model.objVal)
 
 		model.printAttr('X')
 
+		'''
+		##Escrita do resultado:
+		result = m.getVars()
+		for g in range(numGrades):
+			print("GRADE "+str(g))
+			for d in grades[g]:
+				for v in result[0:(numDisc*numHor)]:
+					numbers = [int(v.varName[2]),int(v.varName[4])]
+					if(numbers[0] == d and v.x==1):
+						print("DISCIPLINA "+str(d)+" NO HORARIO "+str(numbers[1]))
+		'''			
 		status = model.status
 		if status == GRB.Status.UNBOUNDED:
 			print('The model cannot be solved because it is unbounded')
@@ -117,6 +124,8 @@ def teamLocation(numUsers, numTeams, minMembersTeam, maxMembersTeam, beneffits, 
 				print('%s' % c.constrName)
 		'''
 
+		
+
 	except GurobiError as e:
 		print('Error code ' + str(e.errno) + ': ' + str(e))
 
@@ -126,5 +135,7 @@ def teamLocation(numUsers, numTeams, minMembersTeam, maxMembersTeam, beneffits, 
 
 
 if __name__ == '__main__':
-	instanceRead('instances/exemplo.txt')
-	teamLocation(users, teams, minMembers, maxMembers, beneffitsWeight, maxExperienceLangTeam, minExperienceLangTeam, langExperience, qtdUsersForMaxXp, qtdUsersForMinXp)
+	instance = Instance('instances/1-Instancia 1.txt') # passar por linha de comando o caminho da instancia
+	solveTeamLocationModel(instance)
+	utils.saveSolution()
+	utils.scatterPlot()
