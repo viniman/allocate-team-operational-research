@@ -1,7 +1,8 @@
 #!/usr/bin/python
 
-import matplotlib.pyplot as plt
+
 from gurobipy import *
+import matplotlib.pyplot as plt
 import time
 import csv
 import model
@@ -57,15 +58,52 @@ def printSolution(model, instance, varAllocation):
     print('Pessoa i alocada no time j(allocate[i,j]):')
     model.printAttr('X')
     
+    listadeListas=[]
     print('SOLUTION:')
     for j in range(instance.numTeams):
         print('Users in the team %s: ' % j, end='')
+        listax=[]
+        listay=[]
+        
         for i in range(instance.numUsers):
             if varAllocation[i,j].x != 0:
                 print(i, end=' ')
+                listax.append(j)
+                listay.append(instance.beneffits[i][j])
+                grupo = (listax,listay)
+                #print('Quantidade: %g' % abs(len(lista)))
+                
+        listadeListas.append(grupo)
+        listax.clear
+        listay.clear
         print('')
+        
+       # print('Quantidade de grupos com listas: %g' % abs(len(listadeListas)))
+    
+             
+   
+    cores=("#FFD700","#00FFFF", "red", "green","pink","black", "yellow", "purple","orange","white","brown","#808000","#556B2F","#8A2BE2","#C71585","#FFE4C4","#FF4500","#FF69B4","#2F4F4F","#00FA9A","#FFD700","#00FFFF", "red", "green","pink","black", "yellow", "purple","orange","white", "purple","orange","white","brown","#808000","#556B2F","#8A2BE2","#C71585","#FFE4C4","#FF4500","#FF69B4","#FFD700","#00FFFF", "red", "green","pink","black", "yellow", "purple","orange","white","brown","#808000","#556B2F","#8A2BE2","#C71585","#FFE4C4","#FF4500","#FF69B4","#2F4F4F","#00FA9A","#FFD700","#00FFFF", "red", "green","pink","black","black", "yellow", "purple","orange","white","brown","#808000","#556B2F","#8A2BE2","#C71585","#FFE4C4","#FF4500","#FF69B4","#2F4F4F","#00FA9A","#FFD700","#00FFFF", "red", "green","pink","black", "yellow", "purple","orange","white", "purple","orange","white","brown","#808000","#556B2F","#FFD700","#00FFFF", "red", "green")
+    labels=("0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80")
+  
+    # Create plot
+    fig = plt.figure()
+    
+    ax = fig.add_subplot(1, 1, 1, facecolor='#E6E6E6')
 
-
+    for data, color, group in zip(listadeListas,cores, labels):
+        x, y = data
+        ax.scatter(x, y, alpha=1.0, c=color, edgecolors='none', s=35, label=group)
+ 
+    # titulo do grafico
+    plt.title('Usuários X Equipes')
+    
+ 
+    # insere legenda dos estados
+   # plt.legend(loc=1)
+        
+        
+        
+        
     status = model.status
     if status == GRB.Status.UNBOUNDED:
         print('The model cannot be solved because it is unbounded')
@@ -80,4 +118,5 @@ def printSolution(model, instance, varAllocation):
     print('       ---------- Outras informacoes ----------')
     model.printQuality()
     model.printStats()
+
 
