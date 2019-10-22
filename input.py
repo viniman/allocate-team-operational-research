@@ -1,5 +1,12 @@
 
+
 class Instance:
+
+    '''
+        Classe de leitura de instancias
+        Salva todos os atributos necessários
+    '''
+
     name = None
     numUsers = None
     numTeams = None
@@ -13,6 +20,9 @@ class Instance:
     langXp = []
 
     def __init__(self, filepath):
+        '''
+            Construtor da instancia a partir de uma caminho para a instancia
+        '''
         self.setNameInstance(filepath)
         print('+'*60)
         print('Leitura de Instância'.rjust(40))
@@ -23,10 +33,21 @@ class Instance:
 
 
     def setNameInstance(self, filepath):
+        '''
+            Seta nome da instancia
+        '''
+
         self.name = filepath.replace('\\','/').split(sep='/')[-1].split(sep='.')[0]
 
 
     def readInstance(self, filepath):
+        '''
+            Leitura da instancia
+            É feito da seguinte forma
+            Vai pegando linha por linha e splitando e transformando
+            em dados separados para associar a instancia
+        '''
+
         try:
             with open(filepath,'r') as inputFile:
                 line = inputFile.readline()
@@ -46,12 +67,15 @@ class Instance:
                 line = inputFile.readline().split()
                 self.qtdUsersMaxXp.extend(list(map(int, line)))
                 cont = 0
+                
+                # loop para pegar a experiencia de cada usuario para cada grupo
                 for i in range(self.numUsers):
                     cont+=1
                     line = inputFile.readline().split()
                     line = list(map(float, line))
                     self.langXp.append(line)
 
+                # loop para pegar o peso de cada usuario para cada grupo
                 for i in range(self.numUsers):
                     line = inputFile.readline().split()
                     line = list(map(float, line))
