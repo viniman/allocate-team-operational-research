@@ -106,7 +106,7 @@ class TeamLocationModel:
 			Modelo salvo com separacao de arquivos de entrada
 			Cada arquivo de entrada tera seu proprio arquivo de modelo
 			'''
-			self.model.write('model_allocation_' + instance.name + '.lp')
+			self.model.write('models/model_allocation_' + instance.name + '.lp')
 
 			# Otimiza modelo de programacao linear
 			self.model.optimize()
